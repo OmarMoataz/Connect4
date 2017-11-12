@@ -4,7 +4,7 @@ require_relative '../lib/player.rb'
 class Connect4
 	attr_reader :players, :board
 	def initialize
-		@board = Board.new
+		@board = Board.new(6,7)
 		@players = [Player.new('R'), Player.new('Y')]
 	end
 
@@ -12,30 +12,21 @@ class Connect4
 		player_index = 0
 		while(board.check_winner == -1 && board.game_end == false)
 			output_col_numbers
-			display_board
+			board.display_grid
 			prompt_user_input
 			input = gets.chomp
 			current_player_name = players[player_index].name
-			while(check_position_validity(input) == false || mark_cell(input, current_player_name) == -1)
+			while(check_position_validity(input) == false ||board.mark_cell(input.to_i - 1, current_player_name) == -1)
 				puts "position is invalid, please enter another one"
 				input = gets.chomp
 			end
-			mark_cell(input, current_player_name)
 			player_index = 1 - player_index
 		end
 	end
 	private
-	def display_board
-		(0..5).each do |row|
-			(0..6).each do |col|
-				print "#{board.grid[row][col]} "
-			end
-			puts
-		end
-	end
 
 	def check_position_validity(pos)
-		return true if pos.to_s =~ /[1-6]/
+		return true if pos.to_s =~ /[1-7]/
 		return false
 	end
 
@@ -46,6 +37,7 @@ class Connect4
 	def prompt_user_input
 		puts "Please enter the column you want"
 	end
-
-	
 end
+
+c4 = Connect4.new
+c4.run_game
